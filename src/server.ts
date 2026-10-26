@@ -9,6 +9,7 @@ import { api } from "./routes.js";
 const app = express();
 app.use(helmet());
 app.use(express.json({ limit: "10kb" }));
+app.use(express.static("public"));
 app.use("/api", rateLimit({ windowMs: 60_000, limit: 100 }));
 
 app.get("/health", (_req, res) => {

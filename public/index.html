@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Subscription Admin</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="logo">S</span> Subscription Admin</div>
+    <span class="badge test">Test mode</span>
+  </header>
+
+  <main>
+    <section class="stats" id="stats"></section>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="transactions">Transactions</button>
+      <button class="tab" data-tab="customers">Customers</button>
+      <button class="tab" data-tab="plans">Plans</button>
+    </nav>
+
+    <div class="card">
+      <div class="scroll"><table id="table"></table></div>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
