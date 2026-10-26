@@ -1,3 +1,4 @@
+const key = () => sessionStorage.getItem("adminKey") || (() => { const k = prompt("Enter admin key"); if (k) sessionStorage.setItem("adminKey", k); return k || ""; })();
 const $ = (id) => document.getElementById(id);
 const naira = (kobo) => "₦" + (kobo / 100).toLocaleString("en-NG");
 const esc = (s) =>
@@ -9,7 +10,8 @@ let data = { stats: {}, transactions: [], customers: [], plans: [] };
 let tab = "transactions";
 
 async function get(url) {
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: { "x-admin-key": key() } });
+  if (res.status === 401) { sessionStorage.removeItem("adminKey"); throw new Error("unauthorized"); }
   if (!res.ok) throw new Error("Request failed: " + url);
   return res.json();
 }
@@ -77,7 +79,7 @@ $("table").addEventListener("click", async (e) => {
   const ref = e.target.dataset.ref;
   if (!ref) return;
   e.target.disabled = true;
-  await fetch("/api/dev/simulate-payment/" + encodeURIComponent(ref), { method: "POST" });
+  await fetch("/api/dev/simulate-payment/" + encodeURIComponent(ref), { method: "POST", headers: { "x-admin-key": key() } });
   load();
 });
 

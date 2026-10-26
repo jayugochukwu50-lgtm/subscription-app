@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { db } from "./db.js";
-import { validate } from "./middleware.js";
+import { validate, requireAdmin } from "./middleware.js";
 import { subscribeSchema } from "./schemas.js";
 import { createSubscription, markTransactionPaid } from "./subscriptions.js";
 
 export const api = Router();
+api.use("/admin", requireAdmin);
 
 api.post("/subscriptions", validate(subscribeSchema), (req, res) => {
   const result = createSubscription(req.body.customerId, req.body.planId);
@@ -13,7 +14,7 @@ api.post("/subscriptions", validate(subscribeSchema), (req, res) => {
 });
 
 // Temporary: stands in for Paystack until we integrate it
-api.post("/dev/simulate-payment/:reference", (req, res) => {
+api.post("/dev/simulate-payment/:reference", requireAdmin, (req, res) => {
   if (process.env.NODE_ENV === "production") {
     return res.status(404).json({ error: "Route not found" });
   }

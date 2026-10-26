@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
 
@@ -16,6 +17,17 @@ export function validate(schema: ZodSchema) {
     req.body = result.data;
     next();
   };
+}
+
+export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  const expected = process.env.ADMIN_KEY;
+  if (!expected) return res.status(500).json({ error: "Server not configured" });
+  const given = Buffer.from(req.header("x-admin-key") ?? "");
+  const wanted = Buffer.from(expected);
+  if (given.length !== wanted.length || !timingSafeEqual(given, wanted)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
 }
 
 export function notFound(_req: Request, res: Response) {

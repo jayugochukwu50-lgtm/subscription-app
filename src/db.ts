@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 
-export const db = new DatabaseSync("app.db");
+export const db = new DatabaseSync(process.env.DB_PATH ?? "app.db");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS plans (
