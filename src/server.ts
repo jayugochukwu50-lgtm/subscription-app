@@ -4,6 +4,7 @@ import rateLimit from "express-rate-limit";
 import { db } from "./db.js";
 import { validate, notFound, errorHandler } from "./middleware.js";
 import { customerSchema } from "./schemas.js";
+import { api } from "./routes.js";
 
 const app = express();
 app.use(helmet());
@@ -30,6 +31,7 @@ app.get("/api/customers", (_req, res) => {
   res.json(db.prepare("SELECT * FROM customers").all());
 });
 
+app.use("/api", api);
 app.use(notFound);
 app.use(errorHandler);
 
