@@ -18,7 +18,20 @@ async function get(url) {
   return res.json();
 }
 
+function showSkeleton() {
+  $("stats").innerHTML = [1, 2, 3, 4]
+    .map(() => '<div class="stat"><div class="skel l"></div><div class="skel v"></div></div>')
+    .join("");
+  $("table").innerHTML =
+    "<tbody>" +
+    [1, 2, 3, 4]
+      .map(() => '<tr class="skel-row"><td colspan="6"><div class="skel line"></div></td></tr>')
+      .join("") +
+    "</tbody>";
+}
+
 async function load() {
+  showSkeleton();
   const [stats, transactions, customers, plans] = await Promise.all([
     get("/api/admin/stats"), get("/api/admin/transactions"),
     get("/api/customers"), get("/api/plans"),
@@ -40,9 +53,14 @@ function handleError(err) {
     const hadKey = Boolean(getKey());
     sessionStorage.removeItem("adminKey");
     showLogin(hadKey ? "That key is not correct. Please try again." : "");
-  } else {
-    $("table").innerHTML = `<tbody><tr><td class="empty">Could not load data</td></tr></tbody>`;
+    return;
   }
+  $("stats").innerHTML = "";
+  $("table").innerHTML = `<tbody><tr><td class="empty">
+    <strong>Could not load data</strong>
+    <small>Check your connection and that the server is running.</small>
+    <button class="pay retry" data-retry="1">Try again</button>
+  </td></tr></tbody>`;
 }
 
 function renderStats() {
@@ -57,6 +75,12 @@ function renderStats() {
     .map(([l, v]) => `<div class="stat"><div class="label">${l}</div><div class="value">${esc(v)}</div></div>`)
     .join("");
 }
+
+const EMPTY = {
+  transactions: ["No transactions yet", "Payments will appear here once customers subscribe."],
+  customers: ["No customers yet", "Customers are added when they check out."],
+  plans: ["No plans yet", "Plans you create will be listed here."],
+};
 
 const views = {
   transactions: () => ({
@@ -80,10 +104,11 @@ const views = {
 function render() {
   renderStats();
   const { head, rows } = views[tab]();
+  const [title, hint] = EMPTY[tab];
   $("table").innerHTML = rows.length
     ? `<thead><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
        <tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`
-    : `<tbody><tr><td class="empty">Nothing here yet</td></tr></tbody>`;
+    : `<tbody><tr><td class="empty"><strong>${title}</strong><small>${hint}</small></td></tr></tbody>`;
 }
 
 document.querySelectorAll(".tab").forEach((btn) =>
@@ -96,9 +121,13 @@ document.querySelectorAll(".tab").forEach((btn) =>
 );
 
 $("table").addEventListener("click", async (e) => {
+  if (e.target.dataset.retry) {
+    return load().catch(handleError);
+  }
   const ref = e.target.dataset.ref;
   if (!ref) return;
   e.target.disabled = true;
+  e.target.textContent = "Paying...";
   const res = await fetch("/api/dev/simulate-payment/" + encodeURIComponent(ref), {
     method: "POST",
     headers: { "x-admin-key": getKey() },

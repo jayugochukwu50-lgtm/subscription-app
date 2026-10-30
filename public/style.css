@@ -64,3 +64,15 @@ tr:last-child td { border-bottom: 0; }
 .bar.zero { fill: var(--line); }
 .axis { fill: var(--muted); font-size: 11px; }
 .chart-total { margin-top: 8px; }
+
+/* Loading and empty states */
+.skel { background: linear-gradient(90deg, var(--line) 25%, var(--brand-soft) 50%, var(--line) 75%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; border-radius: 8px; }
+.skel.l { height: 12px; width: 60%; }
+.skel.v { height: 26px; width: 80%; margin-top: 10px; }
+.skel.line { height: 16px; width: 100%; }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+.empty strong { display: block; color: var(--text); font-size: 16px; margin-bottom: 4px; }
+.empty small { display: block; font-size: 13px; }
+.retry { margin-top: 14px; }
+.pay:disabled { opacity: .6; cursor: default; }
