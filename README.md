@@ -1,6 +1,6 @@
 # Subscription Billing App
 
-A subscription billing backend with Paystack test-mode payments, signed webhooks and an admin dashboard. Built with Node.js, Express and TypeScript, and developed entirely on a phone using Termux and Acode.
+A subscription billing backend with Paystack test-mode payments, signed webhooks and an admin dashboard. Built with Node.js, Express and TypeScript.
 
 > **Status:** Fully working in Paystack **test mode**. The webhook handler is implemented and tested with signed requests. Connecting it to Paystack's dashboard requires a public HTTPS URL, so that happens at deployment.
 
