@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "DB_PATH=:memory: ADMIN_KEY=test-key tsx --test --test-force-exit test/*.test.ts"
+    "test": "DB_PATH=:memory: ADMIN_KEY=test-key PAYSTACK_SECRET_KEY=test-secret tsx --test --test-force-exit test/*.test.ts"
   },
   "keywords": [],
   "author": "",

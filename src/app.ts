@@ -7,11 +7,22 @@ import { validate, notFound, errorHandler, requireAdmin } from "./middleware.js"
 import { customerSchema } from "./schemas.js";
 import { api } from "./routes.js";
 import { payments } from "./payments.js";
+import { paystackWebhook } from "./webhooks.js";
 
 export const app = express();
 app.use(helmet());
-app.use(express.json({ limit: "10kb" }));
+app.use(
+  express.json({
+    limit: "10kb",
+    verify: (req, _res, buf) => {
+      (req as any).rawBody = buf;
+    },
+  })
+);
 app.use(express.static("public"));
+
+app.post("/webhooks/paystack", paystackWebhook);
+
 app.use("/api", rateLimit({ windowMs: 60_000, limit: 100 }));
 
 app.get("/health", (_req, res) => {
