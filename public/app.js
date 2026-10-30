@@ -24,6 +24,7 @@ async function load() {
     get("/api/customers"), get("/api/plans"),
   ]);
   data = { stats, transactions, customers, plans };
+  window.loadChart?.();
   render();
 }
 

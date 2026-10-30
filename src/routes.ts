@@ -45,3 +45,22 @@ api.get("/admin/transactions", (_req, res) => {
     ).all()
   );
 });
+
+api.get("/admin/revenue", (_req, res) => {
+  const rows = db
+    .prepare(
+      `SELECT date(created_at) AS day, SUM(amount_kobo) AS total
+       FROM transactions
+       WHERE status = 'success' AND date(created_at) >= date('now', '-13 days')
+       GROUP BY day`
+    )
+    .all() as { day: string; total: number }[];
+  const byDay = new Map(rows.map((r) => [r.day, r.total]));
+
+  const out = [];
+  for (let i = 13; i >= 0; i--) {
+    const day = new Date(Date.now() - i * 86_400_000).toISOString().slice(0, 10);
+    out.push({ day, totalKobo: byDay.get(day) ?? 0 });
+  }
+  res.json(out);
+});

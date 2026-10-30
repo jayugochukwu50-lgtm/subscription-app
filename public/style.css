@@ -54,3 +54,13 @@ tr:last-child td { border-bottom: 0; }
 .primary:disabled { opacity: .6; }
 .top-right { display: flex; align-items: center; gap: 10px; }
 .ghost { border: 1px solid var(--line); background: var(--card); color: var(--muted); padding: 7px 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+
+/* Revenue chart */
+.chart-card { padding: 18px; margin-bottom: 20px; }
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.chart-head h2 { font-size: 16px; }
+.chart-card svg { width: 100%; height: auto; display: block; }
+.bar { fill: var(--brand); }
+.bar.zero { fill: var(--line); }
+.axis { fill: var(--muted); font-size: 11px; }
+.chart-total { margin-top: 8px; }
