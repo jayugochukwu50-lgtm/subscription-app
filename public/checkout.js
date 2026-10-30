@@ -27,7 +27,7 @@ async function loadPlans() {
     )
     .join("");
   document.querySelectorAll(".plan").forEach((b) => b.addEventListener("click", () => pick(Number(b.dataset.id))));
-  if (plans.length) pick(plans[0].id);
+  const wanted = Number(new URLSearchParams(location.search).get("plan")); if (plans.length) pick((plans.find((p) => p.id === wanted) || plans[0]).id);
 }
 
 $("form").addEventListener("submit", async (e) => {

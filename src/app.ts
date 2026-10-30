@@ -20,6 +20,7 @@ app.use(
   })
 );
 app.use(express.static("public"));
+app.get("/admin", (_req, res) => res.sendFile("admin.html", { root: "public" }));
 
 app.post("/webhooks/paystack", paystackWebhook);
 

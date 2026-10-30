@@ -3,29 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Subscription Admin</title>
+  <title>Subscribe | Simple plans</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/landing.css">
 </head>
 <body>
   <header class="top">
-    <div class="brand"><span class="logo">S</span> Subscription Admin</div>
-    <span class="badge test">Test mode</span>
+    <div class="brand"><span class="logo">S</span> Subscribe</div>
+    <nav class="nav"><a href="#pricing">Pricing</a><a href="/admin">Admin</a></nav>
   </header>
 
   <main>
-    <section class="stats" id="stats"></section>
+    <section class="hero">
+      <span class="badge test">Test mode · no real money</span>
+      <h1>Simple plans that grow with you</h1>
+      <p class="lead">Pick a plan, pay securely with Paystack, and your subscription activates automatically.</p>
+      <a class="primary btn" href="#pricing">View plans</a>
+    </section>
 
-    <nav class="tabs">
-      <button class="tab active" data-tab="transactions">Transactions</button>
-      <button class="tab" data-tab="customers">Customers</button>
-      <button class="tab" data-tab="plans">Plans</button>
-    </nav>
+    <section id="pricing" class="pricing" aria-live="polite"></section>
 
-    <div class="card">
-      <div class="scroll"><table id="table"></table></div>
-    </div>
+    <section class="steps">
+      <div class="step"><span class="num">1</span><h3>Choose a plan</h3><p>Select the plan that fits your needs.</p></div>
+      <div class="step"><span class="num">2</span><h3>Pay securely</h3><p>Checkout is handled by Paystack.</p></div>
+      <div class="step"><span class="num">3</span><h3>Start instantly</h3><p>Your subscription activates once payment is confirmed.</p></div>
+    </section>
   </main>
 
-  <script src="/app.js"></script>
+  <footer class="foot">Demo project. Payments run in Paystack test mode.</footer>
+  <script src="/home.js"></script>
 </body>
 </html>

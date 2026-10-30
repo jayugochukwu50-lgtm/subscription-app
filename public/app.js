@@ -1,4 +1,3 @@
-const key = () => sessionStorage.getItem("adminKey") || (() => { const k = prompt("Enter admin key"); if (k) sessionStorage.setItem("adminKey", k); return k || ""; })();
 const $ = (id) => document.getElementById(id);
 const naira = (kobo) => "₦" + (kobo / 100).toLocaleString("en-NG");
 const esc = (s) =>
@@ -6,12 +5,15 @@ const esc = (s) =>
 const date = (s) => new Date(s.replace(" ", "T") + "Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 const badge = (s) => `<span class="badge ${esc(s)}">${esc(s)}</span>`;
 
+class AuthError extends Error {}
+
 let data = { stats: {}, transactions: [], customers: [], plans: [] };
 let tab = "transactions";
+const getKey = () => sessionStorage.getItem("adminKey") || "";
 
 async function get(url) {
-  const res = await fetch(url, { headers: { "x-admin-key": key() } });
-  if (res.status === 401) { sessionStorage.removeItem("adminKey"); throw new Error("unauthorized"); }
+  const res = await fetch(url, { headers: { "x-admin-key": getKey() } });
+  if (res.status === 401) throw new AuthError();
   if (!res.ok) throw new Error("Request failed: " + url);
   return res.json();
 }
@@ -25,13 +27,30 @@ async function load() {
   render();
 }
 
+function showLogin(message = "") {
+  $("loginError").textContent = message;
+  $("login").hidden = false;
+  $("key").focus();
+}
+const hideLogin = () => ($("login").hidden = true);
+
+function handleError(err) {
+  if (err instanceof AuthError) {
+    const hadKey = Boolean(getKey());
+    sessionStorage.removeItem("adminKey");
+    showLogin(hadKey ? "That key is not correct. Please try again." : "");
+  } else {
+    $("table").innerHTML = `<tbody><tr><td class="empty">Could not load data</td></tr></tbody>`;
+  }
+}
+
 function renderStats() {
   const s = data.stats;
   const cards = [
-    ["Revenue", naira(s.revenueKobo)],
-    ["Active subscriptions", s.activeSubscriptions],
-    ["Customers", s.customers],
-    ["Pending payments", s.pendingTransactions],
+    ["Revenue", naira(s.revenueKobo ?? 0)],
+    ["Active subscriptions", s.activeSubscriptions ?? 0],
+    ["Customers", s.customers ?? 0],
+    ["Pending payments", s.pendingTransactions ?? 0],
   ];
   $("stats").innerHTML = cards
     .map(([l, v]) => `<div class="stat"><div class="label">${l}</div><div class="value">${esc(v)}</div></div>`)
@@ -79,8 +98,43 @@ $("table").addEventListener("click", async (e) => {
   const ref = e.target.dataset.ref;
   if (!ref) return;
   e.target.disabled = true;
-  await fetch("/api/dev/simulate-payment/" + encodeURIComponent(ref), { method: "POST", headers: { "x-admin-key": key() } });
-  load();
+  const res = await fetch("/api/dev/simulate-payment/" + encodeURIComponent(ref), {
+    method: "POST",
+    headers: { "x-admin-key": getKey() },
+  });
+  if (res.status === 401) return handleError(new AuthError());
+  load().catch(handleError);
 });
 
-load().catch(() => ($("table").innerHTML = `<tbody><tr><td class="empty">Could not load data</td></tr></tbody>`));
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const value = $("key").value.trim();
+  if (!value) return showLogin("Please enter your admin key.");
+  sessionStorage.setItem("adminKey", value);
+  $("loginBtn").disabled = true;
+  $("loginBtn").textContent = "Checking...";
+  try {
+    await load();
+    hideLogin();
+    $("key").value = "";
+  } catch (err) {
+    handleError(err);
+  } finally {
+    $("loginBtn").disabled = false;
+    $("loginBtn").textContent = "Sign in";
+  }
+});
+
+$("signout").addEventListener("click", () => {
+  sessionStorage.removeItem("adminKey");
+  data = { stats: {}, transactions: [], customers: [], plans: [] };
+  render();
+  showLogin();
+});
+
+if (getKey()) {
+  load().catch(handleError);
+} else {
+  render();
+  showLogin();
+}

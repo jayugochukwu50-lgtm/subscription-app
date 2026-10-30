@@ -39,3 +39,18 @@ tr:last-child td { border-bottom: 0; }
 .badge.test { background: var(--brand-soft); color: var(--brand); }
 .pay { border: 0; background: var(--brand-soft); color: var(--brand); padding: 7px 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
 .empty { padding: 40px; text-align: center; color: var(--muted); }
+
+/* Login screen */
+.login { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 20px; background: radial-gradient(circle at 20% 10%, var(--brand-soft), var(--bg) 60%); }
+.login[hidden] { display: none; }
+.login-card { width: 100%; max-width: 380px; display: grid; gap: 14px; text-align: center; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 28px 22px; box-shadow: var(--shadow); }
+.login-card h1 { font-size: 22px; }
+.logo.big { width: 52px; height: 52px; border-radius: 16px; font-size: 24px; font-weight: 700; margin: 0 auto; }
+.muted { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.login-card input { padding: 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 16px; text-align: center; }
+.login-card input:focus { outline: 2px solid var(--brand); border-color: transparent; }
+.login-error { color: #d6455d; font-size: 14px; min-height: 18px; }
+.primary { border: 0; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; color: #fff; cursor: pointer; background: linear-gradient(135deg, #5b5bf0, #9a6bff); }
+.primary:disabled { opacity: .6; }
+.top-right { display: flex; align-items: center; gap: 10px; }
+.ghost { border: 1px solid var(--line); background: var(--card); color: var(--muted); padding: 7px 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
