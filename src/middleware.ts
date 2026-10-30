@@ -1,16 +1,21 @@
 import { timingSafeEqual } from "node:crypto";
-import { Request, Response, NextFunction } from "express";
-import { ZodSchema } from "zod";
+import type { Request, Response, NextFunction } from "express";
+import type { ZodType } from "zod";
 
-export function validate(schema: ZodSchema) {
+/**
+ * Checks the request body against a Zod schema before the route runs.
+ * On success the cleaned data (trimmed, lower-cased and so on) replaces the
+ * original body. On failure the client gets a 400 with field-level messages.
+ */
+export function validate(schema: ZodType) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
       return res.status(400).json({
         error: "Validation failed",
-        details: result.error.issues.map((i) => ({
-          field: i.path.join("."),
-          message: i.message,
+        details: result.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
         })),
       });
     }
@@ -19,9 +24,14 @@ export function validate(schema: ZodSchema) {
   };
 }
 
+/**
+ * Protects admin routes with a shared key sent in the x-admin-key header.
+ * The comparison is constant-time so response speed cannot reveal the key.
+ */
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const expected = process.env.ADMIN_KEY;
   if (!expected) return res.status(500).json({ error: "Server not configured" });
+
   const given = Buffer.from(req.header("x-admin-key") ?? "");
   const wanted = Buffer.from(expected);
   if (given.length !== wanted.length || !timingSafeEqual(given, wanted)) {
@@ -34,15 +44,18 @@ export function notFound(_req: Request, res: Response) {
   res.status(404).json({ error: "Route not found" });
 }
 
-export function errorHandler(
-  err: any,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) {
-  if (err?.message?.includes("UNIQUE constraint failed")) {
+/**
+ * Last-resort error handler. Clients only ever see a safe message, and the
+ * real error is logged on the server. Express recognises an error handler
+ * by its four parameters, so _next must stay even though it is unused.
+ */
+export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
+  const message = err instanceof Error ? err.message : "";
+
+  if (message.includes("UNIQUE constraint failed")) {
     return res.status(409).json({ error: "Email already exists" });
   }
+
   console.error(err);
   res.status(500).json({ error: "Something went wrong" });
 }

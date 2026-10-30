@@ -15,6 +15,7 @@ app.use(
   express.json({
     limit: "10kb",
     verify: (req, _res, buf) => {
+      // Keep the raw bytes: Paystack signs the exact body, which JSON parsing would alter.
       (req as any).rawBody = buf;
     },
   })
