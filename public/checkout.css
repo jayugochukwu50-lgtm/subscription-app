@@ -1,0 +1,18 @@
+.narrow { max-width: 520px; }
+h1 { font-size: 24px; margin: 8px 0 16px; }
+.plans { display: grid; gap: 10px; margin-bottom: 16px; }
+.plan { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 16px; border-radius: 16px; border: 2px solid var(--line); background: var(--card); color: var(--text); font-size: 16px; cursor: pointer; text-align: left; }
+.plan.on { border-color: var(--brand); background: var(--brand-soft); }
+.pname { font-weight: 700; }
+.price { font-weight: 700; }
+.price small { color: var(--muted); font-weight: 500; }
+.form { display: grid; gap: 14px; padding: 18px; }
+label { display: grid; gap: 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
+input { padding: 13px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 16px; }
+input:focus { outline: 2px solid var(--brand); border-color: transparent; }
+.error { color: #d6455d; font-size: 14px; min-height: 18px; }
+.primary { border: 0; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; color: #fff; cursor: pointer; background: linear-gradient(135deg, #5b5bf0, #9a6bff); }
+.primary:disabled { opacity: .6; }
+.banner { padding: 14px 16px; border-radius: 12px; margin-bottom: 12px; font-weight: 600; }
+.banner.ok { background: var(--ok-soft); color: var(--ok); }
+.banner.bad { background: var(--warn-soft); color: var(--warn); }

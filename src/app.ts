@@ -6,6 +6,7 @@ import { db } from "./db.js";
 import { validate, notFound, errorHandler, requireAdmin } from "./middleware.js";
 import { customerSchema } from "./schemas.js";
 import { api } from "./routes.js";
+import { payments } from "./payments.js";
 
 export const app = express();
 app.use(helmet());
@@ -33,6 +34,7 @@ app.get("/api/customers", requireAdmin, (_req, res) => {
   res.json(db.prepare("SELECT * FROM customers").all());
 });
 
+app.use("/api/payments", payments);
 app.use("/api", api);
 app.use(notFound);
 app.use(errorHandler);

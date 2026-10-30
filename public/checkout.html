@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Choose a plan</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/checkout.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="logo">S</span> Subscribe</div>
+    <span class="badge test">Test mode</span>
+  </header>
+  <main class="narrow">
+    <div id="banner"></div>
+    <h1>Choose your plan</h1>
+    <div id="plans" class="plans"></div>
+    <form id="form" class="card form" novalidate>
+      <label>Full name<input id="name" autocomplete="name"></label>
+      <label>Email<input id="email" type="email" autocomplete="email"></label>
+      <p id="error" class="error"></p>
+      <button id="pay" class="primary" type="submit">Continue to payment</button>
+    </form>
+  </main>
+  <script src="/checkout.js"></script>
+</body>
+</html>
